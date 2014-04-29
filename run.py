@@ -9,6 +9,7 @@ from SimpleEnvironment import SimpleEnvironment
 from GraspPlanner import GraspPlanner
 from AStarPlanner import AStarPlanner
 # TODO: Import the applicable RRTPlanner
+from HeuristicRRTPlanner import HeuristicRRTPlanner
 
 if __name__ == "__main__":
     
@@ -76,8 +77,8 @@ if __name__ == "__main__":
     base_env = SimpleEnvironment(herb_base, resolution)
 
     base_planner = AStarPlanner(base_env, visualize = False)
-    arm_planner = None
     # TODO: Here initialize your arm planner
+    arm_planner = HeuristicRRTPlanner(arm_env)
   
     # add a table and move the robot into place
     table = env.ReadKinBodyXMLFile('models/objects/table.kinbody.xml')
@@ -106,11 +107,14 @@ if __name__ == "__main__":
         bottle_transform[1,3] = table_aabb.pos()[1] + 0.5*table_aabb.extents()[1]
 
     bottle.SetTransform(bottle_transform)
+
+    import IPython
+    # IPython.embed()
  
     planner = GraspPlanner(herb.robot, base_planner, arm_planner)
     planner.PlanToGrasp(bottle)
 
-    import IPython
+#    import IPython
     IPython.embed()
 
 
