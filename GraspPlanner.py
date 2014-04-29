@@ -62,7 +62,20 @@ class GraspPlanner(object):
             # Iterate through sampled base positions to see if they are collision free 
             #    and if they can genrate collision free arm configuratinos to get to the grasp
             for i in range(10):
+                # Snap the transform to current the nearest grid location and test IK and collision
                 self.robot.SetTransform(pose[i])
+                temp_transform      = self.robot.GetTransform()
+                temp_transform_SE2  = [temp_transform[0][3], temp_transform[1][3], numpy.arctan2(temp_transform[1][0], temp_transform[0][0])]
+                temp_grid_coord     = self.base_planner.planning_env.discrete_env.ConfigurationToGridCoord(temp_transform_SE2)
+                discrete_transform  = self.base_planner.planning_env.discrete_env.GridCoordToConfiguration(temp_grid_coord)
+                x       = discrete_transform[0]
+                y       = discrete_transform[1]
+                theta   = discrete_transform[2]
+                robot_pose = numpy.array([[numpy.cos(theta), -numpy.sin(theta), 0,  x],
+                                          [numpy.sin(theta),  numpy.cos(theta), 0,  y],
+                                          [0.              ,  0.              , 1,  0.  ],
+                                          [0.              ,  0.              , 0,  1.  ]])
+                self.robot.SetTransform(robot_pose)
 
                 jointAngles = manip.FindIKSolution(T_grasp, filteroptions=1)  # Second parameter reference - http://tinyurl.com/k88yqob
                 if jointAngles == None:
