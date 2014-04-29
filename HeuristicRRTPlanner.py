@@ -129,7 +129,9 @@ class HeuristicRRTPlanner(object):
         else:
             print "Goal not found.\n\tVertices Explored: %d\n\tTime Elapsed: %0.3f seconds"%(numNodes,time.clock()-start_time)
 
-            plan.append(start_config)
-            plan.append(goal_config)
-        
+            # plan.append(start_config)
+            # plan.append(goal_config)
+
+            plan = []
+
         return plan

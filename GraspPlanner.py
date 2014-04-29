@@ -215,6 +215,8 @@ class GraspPlanner(object):
         global_start_base   = self.robot.GetTransform()
         global_start_arm    = self.robot.GetActiveDOFValues()
 
+        print global_start_arm
+
         numIter = 0
 
         while not pipelineComplete:
@@ -280,6 +282,7 @@ class GraspPlanner(object):
             print '\n\n\n[Grasp Planner] Planning for final arm path'
             start_config = self.arm_planner.planning_env.herb.GetCurrentConfiguration()
             arm_plan = self.arm_planner.Plan(start_config, grasp_config)
+            print arm_plan
             if arm_plan == []:
                 self.robot.SetTransform(global_start_base)
                 self.robot.SetActiveDOFValues(global_start_arm)
@@ -299,6 +302,8 @@ class GraspPlanner(object):
             # Grasp the bottle
             self.robot.SetTransform(global_start_base)
             self.robot.SetActiveDOFValues(global_start_arm)
+            print global_start_arm
+            print global_start_base
 
             raw_input('Press Any Key to execute entire sequence of actions...')
             self.arm_planner.planning_env.herb.ExecuteTrajectory(arm_traj_0)
